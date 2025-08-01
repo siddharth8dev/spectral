@@ -63,10 +63,21 @@ const createDocument = async (
   identifier: string | number,
   opts: IFileReadOptions,
   source: string,
-): Promise<Document<unknown, Parsers.YamlParserResult<unknown>>> => {
+) => {
+  let specContent = '';
   if (typeof identifier === 'string') {
-    return new Document(await readParsable(identifier, opts), Parsers.Yaml, identifier);
+    let content = await readParsable(identifier, opts);
+    if (identifier.toLowerCase().endsWith('.json')) {
+      return new Document(content, Parsers.Json, identifier);
+    }
+    return new Document(content, Parsers.Yaml, identifier);
   }
 
-  return new Document(await readFileDescriptor(identifier, opts), Parsers.Yaml, source);
+  specContent = await readFileDescriptor(identifier, opts);
+  try {
+    JSON.parse(specContent);
+    return new Document(specContent, Parsers.Json, source);
+  } catch {
+    return new Document(specContent, Parsers.Yaml, source);
+  }
 };

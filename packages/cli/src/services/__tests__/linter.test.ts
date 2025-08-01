@@ -457,11 +457,11 @@ describe('Linter service', () => {
           path: ['paths'],
           range: {
             end: {
-              character: 13,
-              line: 6,
+              character: 3,
+              line: 7,
             },
             start: {
-              character: 10,
+              character: 11,
               line: 4,
             },
           },
